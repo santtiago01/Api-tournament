@@ -43,3 +43,4 @@ C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Npgsql.dll
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\obj\Debug\net8.0\TournamentAPI.sourcelink.json

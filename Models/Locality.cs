@@ -14,6 +14,6 @@ namespace TournamentApi.Models
         public string? Name { get; set; }
 
         [JsonIgnore]
-        public ICollection<Team>? teams { get; set; }
+        public ICollection<Team>? Teams { get; set; } = new List<Team>();
     }
 }
