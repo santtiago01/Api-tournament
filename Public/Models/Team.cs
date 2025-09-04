@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using TournamentApi.Models;
 
-namespace TournamentApi.Models
+namespace TournamentApi.Public.Models
 {
     [Table("teams")]
     public class Team

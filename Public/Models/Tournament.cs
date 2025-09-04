@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
-namespace TournamentApi.Models
+namespace TournamentApi.Public.Models
 {
     [Table("tournaments")]
     public class Tournament

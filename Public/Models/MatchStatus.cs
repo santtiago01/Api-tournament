@@ -1,19 +1,15 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TournamentApi.Models
+namespace TournamentApi.Public.Models
 {
-    [Table("fieldzones")]
-    public class FieldZone
+    [Table("matchstatuses")]
+    public class MatchStatus
     {
         [Column("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [Column("name")]
         public string Name { get; set; } = string.Empty;
-
-        [Column("fieldid")]
-        public long FieldId { get; set; }
-        public Field? Field { get; set; }
 
         public ICollection<Match> Matches { get; set; } = new List<Match>();
     }

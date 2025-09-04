@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TournamentApi.Models
+namespace TournamentApi.Public.Models
 {
     [Table("matchteams")]
     public class MatchTeam

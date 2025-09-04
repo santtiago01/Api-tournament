@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using TournamentApi.Models;
 using System.Text.Json.Serialization;
 
-namespace TournamentApi.Models
+namespace TournamentApi.Public.Models
 {
     [Table("localities")]
     public class Locality
