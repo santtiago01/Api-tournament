@@ -35,5 +35,8 @@ namespace TournamentApi.Admin.Models
 
         [Column("updatedat")]
         public DateTime UpdatedAt { get; set; }
+
+        // Propiedad de navegación
+        public ICollection<MatchReferee>? MatchReferees { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TournamentApi.Public.Models
+namespace TournamentApi.Admin.Models
 {
     [Table("matchstatuses")]
     public class MatchStatus
@@ -9,8 +9,6 @@ namespace TournamentApi.Public.Models
         public int Id { get; set; }
 
         [Column("name")]
-        public string Name { get; set; } = string.Empty;
-
-        public ICollection<Match> Matches { get; set; } = new List<Match>();
+        public string? Name { get; set; }
     }
 }

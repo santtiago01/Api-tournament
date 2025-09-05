@@ -8,9 +8,9 @@ namespace TournamentAPI.Controllers
     [Route("api/[controller]")]
     public class StandingsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly AdminDbContext _context;
 
-        public StandingsController(AppDbContext context)
+        public StandingsController(AdminDbContext context)
         {
             _context = context;
         }

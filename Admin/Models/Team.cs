@@ -28,5 +28,9 @@ namespace TournamentApi.Admin.Models
 
         [Column("updatedat")]
         public DateTime UpdatedAt { get; set; }
+
+        // Propiedades de navegación
+        public ICollection<PlayerTeam>? PlayerTeams { get; set; }
+        public ICollection<MatchTeam>? MatchTeams { get; set; }
     }
 }

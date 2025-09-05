@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using TournamentApi.Public.Models;
 
 namespace TournamentApi.Admin.Models
 {
@@ -33,5 +32,10 @@ namespace TournamentApi.Admin.Models
 
         [Column("updatedat")]
         public DateTime UpdatedAt { get; set; }
+
+        // Propiedades de navegación
+        public ICollection<MatchTeam>? MatchTeams { get; set; }
+        public ICollection<MatchReferee>? MatchReferees { get; set; }
+        public ICollection<MatchHistory>? MatchHistory { get; set; }
     }
 }
