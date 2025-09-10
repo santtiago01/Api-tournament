@@ -30,7 +30,7 @@ namespace TournamentApi.Admin.Controllers
         {
             _context.teams.Add(team);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetTeam), new { id = team.Id }, team);
+            return Ok(team);
         }
 
         [HttpPut("{id}")]

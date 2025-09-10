@@ -32,7 +32,8 @@ namespace TournamentApi.Admin.Models
         public DateTime UpdatedAt { get; set; }
 
         // Propiedades de navegación
-        public ICollection<PlayerTeam>? PlayerTeams { get; set; }
+        public ICollection<PlayerTeam> PlayerTeams { get; set; } = new List<PlayerTeam>();
+        public ICollection<Position>? Positions { get; set; }
         public ICollection<MatchHistory>? MatchHistory { get; set; }
     }
 }

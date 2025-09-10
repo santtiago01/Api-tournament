@@ -13,8 +13,18 @@ namespace TournamentApi.Admin.Controllers
         public PlayersController(AdminDbContext context) => _context = context;
 
         [HttpGet]
-        public async Task<IActionResult> GetPlayers() =>
-            Ok(await _context.players.ToListAsync());
+        public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
+        {
+            var players = await _context.players
+                .Include(p => p.PlayerTeams)
+                    .ThenInclude(pt => pt.Team)
+                .Include(p => p.PlayerTeams)
+                    .ThenInclude(pt => pt.Position)
+                .ToListAsync();
+
+            return Ok(players);
+        }
+            
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlayer(long id)
