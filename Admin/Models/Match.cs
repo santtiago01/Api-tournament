@@ -20,12 +20,9 @@ namespace TournamentApi.Admin.Models
         [Column("matchdate")]
         public DateTime MatchDate { get; set; }
 
-        [Column("stateid")]
-        public long StateId { get; set; }
-        public MatchStatus? State { get; set; }
-
-        [Column("status")]
-        public string Status { get; set; } = string.Empty;
+        [Column("statusid")]
+        public long StatusId { get; set; }
+        public MatchStatus? Status { get; set; }
 
         [Column("createdat")]
         public DateTime CreatedAt { get; set; }

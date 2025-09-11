@@ -6,7 +6,7 @@ namespace TournamentApi.Admin.Models
     public class MatchStatus
     {
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Column("name")]
         public string? Name { get; set; }

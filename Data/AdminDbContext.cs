@@ -27,7 +27,13 @@ namespace TournamentApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Match>()
+                .HasOne(m => m.Status)
+                .WithMany()
+                .HasForeignKey(m => m.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
