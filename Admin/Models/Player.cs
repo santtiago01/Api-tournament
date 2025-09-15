@@ -33,7 +33,6 @@ namespace TournamentApi.Admin.Models
 
         // Propiedades de navegación
         public ICollection<PlayerTeam> PlayerTeams { get; set; } = new List<PlayerTeam>();
-        public ICollection<Position>? Positions { get; set; }
         public ICollection<MatchHistory>? MatchHistory { get; set; }
     }
 }

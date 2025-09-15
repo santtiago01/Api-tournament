@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentApi.Admin.Models;
 using TournamentApi.Data;
+using TournamentApi.Public.DTOs;
 
 namespace TournamentApi.Admin.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Route("api/public/[controller]")]
     [ApiController]
     public class StandingsController : ControllerBase
     {
@@ -19,15 +20,107 @@ namespace TournamentApi.Admin.Controllers
                              .Include(s => s.Tournament)
                              .ToListAsync());
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetStanding(long id)
+        [HttpGet("{tournamentId}")]
+        public async Task<IActionResult> GetStanding(long tournamentId)
         {
-            var standing = await _context.standings
-                                         .Include(s => s.Team)
-                                         .Include(s => s.Tournament)
-                                         .FirstOrDefaultAsync(s => s.Id == id);
-            if (standing == null) return NotFound();
-            return Ok(standing);
+            var matches = await _context.matches
+                .Include(s => s.MatchTeams!).ThenInclude(mt => mt.Team)
+                .Include(s => s.Status)
+                .Where(s => s.TournamentId == tournamentId)
+                .ToListAsync();
+
+            if (!matches.Any())
+                return NotFound("No se encontraron partidos para este torneo.");
+
+            var finishMatches = matches
+                .Where(s => s.Status != null && s.Status.Name?.ToLower() == "Finalizado")
+                .ToList();
+
+            var standingsDict = new Dictionary<long, StandingDto>();
+
+            foreach (var match in finishMatches)
+            {
+                if (match.MatchTeams == null || match.MatchTeams.Count != 2) continue;
+
+                var teamA = match.MatchTeams.ElementAt(0);
+                var teamB = match.MatchTeams.ElementAt(1);
+
+                if (!standingsDict.ContainsKey(teamA.TeamId))
+                {
+                    standingsDict[teamA.TeamId] = new StandingDto
+                    {
+                        TeamId = teamA.TeamId,
+                        TeamName = teamA.Team?.Name,
+                        MatchesPlayed = 0,
+                        Wins = 0,
+                        Draws = 0,
+                        Losses = 0,
+                        GoalsFor = 0,
+                        GoalsAgainst = 0,
+                        GoalDifference = 0,
+                        Points = 0
+                    };
+                }
+
+                if (!standingsDict.ContainsKey(teamB.TeamId))
+                {
+                    standingsDict[teamB.TeamId] = new StandingDto
+                    {
+                        TeamId = teamB.TeamId,
+                        TeamName = teamB.Team?.Name,
+                        MatchesPlayed = 0,
+                        Wins = 0,
+                        Draws = 0,
+                        Losses = 0,
+                        GoalsFor = 0,
+                        GoalsAgainst = 0,
+                        GoalDifference = 0,
+                        Points = 0
+                    };
+                }
+
+                var standingA = standingsDict[teamA.TeamId];
+                var standingB = standingsDict[teamB.TeamId];
+
+                standingA.MatchesPlayed++;
+                standingB.MatchesPlayed++;
+
+                standingA.GoalsFor += teamA.Goals;
+                standingA.GoalsAgainst += teamB.Goals;
+                standingB.GoalsFor += teamB.Goals;
+                standingB.GoalsAgainst += teamA.Goals;
+
+                standingA.GoalDifference = standingA.GoalsFor - standingA.GoalsAgainst;
+                standingB.GoalDifference = standingB.GoalsFor - standingB.GoalsAgainst;
+
+                if (teamA.Goals > teamB.Goals)
+                {
+                    standingA.Wins++;
+                    standingA.Points += 3;
+                    standingB.Losses++;
+                }
+                else if (teamA.Goals < teamB.Goals)
+                {
+                    standingB.Wins++;
+                    standingB.Points += 3;
+                    standingA.Losses++;
+                }
+                else
+                {
+                    standingA.Draws++;
+                    standingA.Points += 1;
+                    standingB.Draws++;
+                    standingB.Points += 1;
+                }
+            }
+
+            var standings = standingsDict.Values
+                .OrderByDescending(s => s.Points)
+                .ThenByDescending(s => s.GoalDifference)
+                .ThenByDescending(s => s.GoalsFor)
+                .ToList();
+
+            return Ok(standings);
         }
 
         [HttpPost]

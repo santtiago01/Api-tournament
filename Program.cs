@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TournamentApi.Data;
+using TournamentApi.Public.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 
 // Contexts
 builder.Services.AddDbContext<AdminDbContext>(options =>
@@ -37,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowReactApp");
+
+app.MapHub<PublicHub>("/hubs/public");
 
 app.UseHttpsRedirection();
 
