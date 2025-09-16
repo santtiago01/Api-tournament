@@ -24,6 +24,7 @@ namespace TournamentApi.Data
         public DbSet<Standing> standings { get; set; }
         public DbSet<Team> teams { get; set; }
         public DbSet<Tournament> tournaments { get; set; }
+        public DbSet<User> users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

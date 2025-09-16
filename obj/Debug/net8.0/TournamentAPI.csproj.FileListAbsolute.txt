@@ -44,3 +44,11 @@ C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\obj\Debug\net8.0\TournamentAPI.sourcelink.json
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\santi\OneDrive\Escritorio\AppWeb\TournamentAPI\TournamentAPI\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
