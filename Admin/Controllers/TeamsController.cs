@@ -14,15 +14,34 @@ namespace TournamentApi.Admin.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetTeams() =>
-            Ok(await _context.teams.Include(t => t.Locality).ToListAsync());
+            Ok(await _context.teams
+                .Include(t => t.Locality)
+                .Include(t => t.Category)
+                .ToListAsync());
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTeam(long id)
         {
             var team = await _context.teams.Include(t => t.Locality)
+                                           .Include(t => t.Category)
                                            .FirstOrDefaultAsync(t => t.Id == id);
             if (team == null) return NotFound();
             return Ok(team);
+        }
+
+        [HttpGet("by-category/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<Team>>> GetTeamsByCategory(long categoryId)
+        {
+            var teams = await _context.teams
+                .Where(t => t.CategoryId == categoryId)
+                .ToListAsync();
+
+            if (teams == null || teams.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(teams);
         }
 
         [HttpPost]

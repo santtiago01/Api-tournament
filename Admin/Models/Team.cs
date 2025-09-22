@@ -17,6 +17,10 @@ namespace TournamentApi.Admin.Models
         public long LocalityId { get; set; }
         public Locality? Locality { get; set; }
 
+        [Column("categoryid")]
+        public long CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         [Column("shield")]
         public byte[]? Shield { get; set; }
 
@@ -30,7 +34,10 @@ namespace TournamentApi.Admin.Models
         public DateTime UpdatedAt { get; set; }
 
         // Propiedades de navegación
-        public ICollection<PlayerTeam>? PlayerTeams { get; set; }
+        [NotMapped]
+        public List<Player> Players => PlayerTeams?.Select(pt => pt.Player!).ToList() ?? new List<Player>();
+
+        public ICollection<PlayerTeam> PlayerTeams { get; set; } = new List<PlayerTeam>();
         public ICollection<MatchTeam>? MatchTeams { get; set; }
     }
 }

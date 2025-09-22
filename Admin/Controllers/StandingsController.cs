@@ -24,21 +24,21 @@ namespace TournamentApi.Admin.Controllers
         public async Task<IActionResult> GetStanding(long tournamentId)
         {
             var matches = await _context.matches
-                .Include(s => s.MatchTeams!).ThenInclude(mt => mt.Team)
-                .Include(s => s.Status)
-                .Where(s => s.TournamentId == tournamentId)
+                .Include(m => m.MatchTeams!).ThenInclude(mt => mt.Team)
+                .Include(m => m.Status)
+                .Where(m => m.TournamentId == tournamentId)
                 .ToListAsync();
 
             if (!matches.Any())
                 return NotFound("No se encontraron partidos para este torneo.");
 
-            var finishMatches = matches
-                .Where(s => s.Status != null && s.Status.Name?.ToLower() == "Finalizado")
+            var finishedMatches = matches
+                .Where(m => m.Status != null && m.Status.Name != null && m.Status.Name.Equals("Finalizado", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             var standingsDict = new Dictionary<long, StandingDto>();
 
-            foreach (var match in finishMatches)
+            foreach (var match in finishedMatches)
             {
                 if (match.MatchTeams == null || match.MatchTeams.Count != 2) continue;
 
@@ -46,38 +46,10 @@ namespace TournamentApi.Admin.Controllers
                 var teamB = match.MatchTeams.ElementAt(1);
 
                 if (!standingsDict.ContainsKey(teamA.TeamId))
-                {
-                    standingsDict[teamA.TeamId] = new StandingDto
-                    {
-                        TeamId = teamA.TeamId,
-                        TeamName = teamA.Team?.Name,
-                        MatchesPlayed = 0,
-                        Wins = 0,
-                        Draws = 0,
-                        Losses = 0,
-                        GoalsFor = 0,
-                        GoalsAgainst = 0,
-                        GoalDifference = 0,
-                        Points = 0
-                    };
-                }
+                    standingsDict[teamA.TeamId] = new StandingDto { TeamId = teamA.TeamId, TeamName = teamA.Team?.Name ?? "Equipo A" };
 
                 if (!standingsDict.ContainsKey(teamB.TeamId))
-                {
-                    standingsDict[teamB.TeamId] = new StandingDto
-                    {
-                        TeamId = teamB.TeamId,
-                        TeamName = teamB.Team?.Name,
-                        MatchesPlayed = 0,
-                        Wins = 0,
-                        Draws = 0,
-                        Losses = 0,
-                        GoalsFor = 0,
-                        GoalsAgainst = 0,
-                        GoalDifference = 0,
-                        Points = 0
-                    };
-                }
+                    standingsDict[teamB.TeamId] = new StandingDto { TeamId = teamB.TeamId, TeamName = teamB.Team?.Name ?? "Equipo B" };
 
                 var standingA = standingsDict[teamA.TeamId];
                 var standingB = standingsDict[teamB.TeamId];

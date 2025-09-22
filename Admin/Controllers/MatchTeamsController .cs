@@ -24,12 +24,14 @@ namespace TournamentApi.Admin.Controllers
             return Ok(matchTeams);
         }
 
-        // GET: api/admin/matchteams/by-match/10
+        // GET: api/admin/matchteams/by-match/{id}
         [HttpGet("by-match/{matchId}")]
         public async Task<IActionResult> GetByMatch(long matchId)
         {
             var matchTeams = await _context.matchteams
                 .Include(mt => mt.Team)
+                    .ThenInclude(t => t.PlayerTeams)
+                        .ThenInclude(pt => pt.Player)
                 .Where(mt => mt.MatchId == matchId)
                 .ToListAsync();
 

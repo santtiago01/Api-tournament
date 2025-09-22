@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TournamentApi.Admin.Models;
 using TournamentApi.Data;
 using TournamentApi.Public.DTOs;
+using TournamentApi.Admin.Models.DTOs;
 using TournamentApi.Public.Hubs;
 
 namespace TournamentApi.Admin.Controllers
@@ -25,13 +26,37 @@ namespace TournamentApi.Admin.Controllers
             return _context.matches.Any(e => e.Id == id);
         }
 
+        [HttpGet("with-teams")]
+        public async Task<ActionResult<IEnumerable<MatchWithTeamsDto>>> GetMatchesWithTeams()
+        {
+            var matches = await (from m in _context.matches
+                                join mtHome in _context.matchteams on m.Id equals mtHome.MatchId
+                                join ht in _context.teams on mtHome.TeamId equals ht.Id
+                                join mtAway in _context.matchteams on m.Id equals mtAway.MatchId
+                                join at in _context.teams on mtAway.TeamId equals at.Id
+                                where mtHome.IsHome && !mtAway.IsHome
+                                select new MatchWithTeamsDto
+                                {
+                                    MatchId = m.Id,
+                                    HomeTeamId = ht.Id,
+                                    HomeTeamName = ht.Name,
+                                    AwayTeamId = at.Id,
+                                    AwayTeamName = at.Name,
+                                    MatchDate = m.MatchDate
+                                })
+                                .OrderBy(m => m.MatchDate)
+                                .ToListAsync();
+
+            return Ok(matches);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetMatches()
         {
             var matches = await _context.matches
                 .Include(m => m.Zone)
                 .Include(m => m.Status)
-                .Include(m => m.Tournament!)
+                .Include(m => m.Tournament)
                 .Include(m => m.MatchTeams!).ThenInclude(mt => mt.Team)
                 .ToListAsync();
 
@@ -47,7 +72,7 @@ namespace TournamentApi.Admin.Controllers
                 Tournament = match.Tournament == null ? null : new TournamentDto
                 {
                     Id = match.Tournament.Id,
-                    Name = match.Tournament.Description,
+                    Description = match.Tournament.Description,
                     StartDate = match.Tournament.StartDate,
                     EndDate = match.Tournament.FinishDate
                 },
@@ -97,7 +122,7 @@ namespace TournamentApi.Admin.Controllers
                 Tournament = match.Tournament == null ? null : new TournamentDto
                 {
                     Id = match.Tournament.Id,
-                    Name = match.Tournament.Description,
+                    Description = match.Tournament.Description,
                     StartDate = match.Tournament.StartDate,
                     EndDate = match.Tournament.FinishDate
                 },
@@ -151,7 +176,7 @@ namespace TournamentApi.Admin.Controllers
                     Tournament = createdMatch.Tournament == null ? null : new TournamentDto
                     {
                         Id = createdMatch.Tournament.Id,
-                        Name = createdMatch.Tournament.Description,
+                        Description = createdMatch.Tournament.Description,
                         StartDate = createdMatch.Tournament.StartDate,
                         EndDate = createdMatch.Tournament.FinishDate
                     },
@@ -181,19 +206,24 @@ namespace TournamentApi.Admin.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMatch(long id, [FromBody] Match match)
+        public async Task<IActionResult> UpdateMatch(long id, [FromBody] Match matchDTO)
         {
-            if (id != match.Id) return BadRequest();
+            var match = await _context.matches.FindAsync(id);
+            if (match == null) return NotFound();
 
-            _context.Entry(match).State = EntityState.Modified;
+            match.MatchDate = matchDTO.MatchDate;
+            match.TournamentId = matchDTO.TournamentId;
+            match.ZoneId = matchDTO.ZoneId;
+            match.StatusId = matchDTO.StatusId;
+            match.UpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
-            // recargar con includes
             var updatedMatch = await _context.matches
-                .Include(m => m.Tournament!)
-                .Include(m => m.MatchTeams!).ThenInclude(mt => mt.Team)
+                .Include(m => m.Tournament)
                 .Include(m => m.Zone)
                 .Include(m => m.Status)
+                .Include(m => m.MatchTeams).ThenInclude(mt => mt.Team)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (updatedMatch == null) return NotFound();
@@ -210,7 +240,7 @@ namespace TournamentApi.Admin.Controllers
                 Tournament = updatedMatch.Tournament == null ? null : new TournamentDto
                 {
                     Id = updatedMatch.Tournament.Id,
-                    Name = updatedMatch.Tournament.Description,
+                    Description = updatedMatch.Tournament.Description,
                     StartDate = updatedMatch.Tournament.StartDate,
                     EndDate = updatedMatch.Tournament.FinishDate
                 },
