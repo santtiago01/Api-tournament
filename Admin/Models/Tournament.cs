@@ -22,6 +22,9 @@ namespace TournamentApi.Admin.Models
         [Column("state")]
         public int State { get; set; }
 
+        [Column("iscurrent")]
+        public bool IsCurrent { get; set; } = false;
+
         [Column("createdat")]
         public DateTime CreatedAt { get; set; }
 

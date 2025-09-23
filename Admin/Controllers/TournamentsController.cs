@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentApi.Admin.Models;
+using TournamentApi.Admin.Models.DTOs;
 using TournamentApi.Data;
 
 namespace TournamentApi.Admin.Controllers
@@ -31,6 +32,34 @@ namespace TournamentApi.Admin.Controllers
             _context.tournaments.Add(tournament);
             await _context.SaveChangesAsync();
             return Ok(tournament);
+        }
+
+        [HttpPost("setCurrentTournament")]
+        public async Task<IActionResult> SetCurrentTournament([FromBody] SetTournamentRequest request)
+        {
+            var allTournaments = await _context.tournaments.ToListAsync();
+            foreach (var t in allTournaments)
+                t.IsCurrent = false;
+
+            var tournament = await _context.tournaments.FindAsync(request.TournamentId);
+            if (tournament == null) return NotFound();
+
+            tournament.IsCurrent = true;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = $"Torneo {tournament.Description} establecido como actual." });
+        }
+
+        [HttpGet("currentTournament")]
+        public async Task<IActionResult> GetCurrentTournament()
+        {
+            var tournament = await _context.tournaments
+                .FirstOrDefaultAsync(t => t.IsCurrent);
+
+            if (tournament == null)
+                return NotFound(new { message = "No hay un torneo actual establecido." });
+
+            return Ok(new { tournament.Id, tournament.Description });
         }
 
         [HttpPut("{id}")]

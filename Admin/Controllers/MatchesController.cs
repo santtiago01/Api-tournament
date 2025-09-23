@@ -26,6 +26,56 @@ namespace TournamentApi.Admin.Controllers
             return _context.matches.Any(e => e.Id == id);
         }
 
+        [HttpGet("byTournament/{tournamentId}")]
+        public async Task<IActionResult> GEtMatchesByTournament(long tournamentId)
+        {
+            var matches = await _context.matches
+                .Include(m => m.Tournament)
+                .Include(m => m.Status)
+                .Include(m => m.Zone)
+                .Include(m => m.MatchTeams)
+                    .ThenInclude(mt => mt.Team)
+                .Where(m => m.TournamentId == tournamentId)
+                .ToListAsync();
+
+            var dtos = matches.Select(match => new MatchDto
+            {
+                Id = match.Id,
+                MatchDate = match.MatchDate,
+                Status = match.Status == null ? null : new MatchStatusDto
+                {
+                    Id = match.Status.Id,
+                    Name = match.Status.Name
+                },
+                Tournament = match.Tournament == null ? null : new TournamentDto
+                {
+                    Id = match.Tournament.Id,
+                    Description = match.Tournament.Description,
+                    StartDate = match.Tournament.StartDate,
+                    EndDate = match.Tournament.FinishDate
+                },
+                Zone = match.Zone == null ? null : new ZoneDto
+                {
+                    Id = match.Zone.Id,
+                    Name = match.Zone.Name
+                },
+                Teams = match.MatchTeams?.Select(mt => new MatchTeamDto
+                {
+                    Id = mt.Id,
+                    TeamId = mt.TeamId,
+                    Score = mt.Goals,
+                    Team = mt.Team == null ? null : new TeamDto
+                    {
+                        Id = mt.Team.Id,
+                        Name = mt.Team.Name,
+                        Shield = mt.Team.Shield
+                    }
+                })
+            });
+
+            return Ok(dtos);
+        }
+
         [HttpGet("with-teams")]
         public async Task<ActionResult<IEnumerable<MatchWithTeamsDto>>> GetMatchesWithTeams()
         {
