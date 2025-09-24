@@ -46,10 +46,22 @@ namespace TournamentApi.Admin.Controllers
                 var teamB = match.MatchTeams.ElementAt(1);
 
                 if (!standingsDict.ContainsKey(teamA.TeamId))
-                    standingsDict[teamA.TeamId] = new StandingDto { TeamId = teamA.TeamId, TeamName = teamA.Team?.Name ?? "Equipo A" };
+                    standingsDict[teamA.TeamId] = new StandingDto
+                    {
+                        TeamId = teamA.TeamId,
+                        TeamName = teamA.Team?.Name ?? "Equipo A",
+                        TeamLogo = teamA.Team?.Shield != null ? Convert.ToBase64String(teamA.Team.Shield) : null,
+                        CategoryId = teamA.Team?.CategoryId
+                    };
 
                 if (!standingsDict.ContainsKey(teamB.TeamId))
-                    standingsDict[teamB.TeamId] = new StandingDto { TeamId = teamB.TeamId, TeamName = teamB.Team?.Name ?? "Equipo B" };
+                    standingsDict[teamB.TeamId] = new StandingDto
+                    {
+                        TeamId = teamB.TeamId,
+                        TeamName = teamB.Team?.Name ?? "Equipo B",
+                        TeamLogo = teamB.Team?.Shield != null ? Convert.ToBase64String(teamB.Team.Shield) : null,
+                        CategoryId = teamB.Team?.CategoryId
+                    };
 
                 var standingA = standingsDict[teamA.TeamId];
                 var standingB = standingsDict[teamB.TeamId];

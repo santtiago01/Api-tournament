@@ -68,7 +68,8 @@ namespace TournamentApi.Admin.Controllers
                     {
                         Id = mt.Team.Id,
                         Name = mt.Team.Name,
-                        Shield = mt.Team.Shield
+                        Shield = mt.Team.Shield,
+                        CategoryId = mt.Team.CategoryId
                     }
                 })
             });

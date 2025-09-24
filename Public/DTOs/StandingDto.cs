@@ -4,6 +4,8 @@ namespace TournamentApi.Public.DTOs
     {
         public long TeamId { get; set; }
         public string? TeamName { get; set; }
+        public string? TeamLogo { get; set; }
+        public long? CategoryId { get; set; }
         public int MatchesPlayed { get; set; }
         public int Wins { get; set; }
         public int Draws { get; set; }
