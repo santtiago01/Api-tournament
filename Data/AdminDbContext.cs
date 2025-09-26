@@ -35,6 +35,12 @@ namespace TournamentApi.Data
                 .WithMany()
                 .HasForeignKey(m => m.StatusId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Relación uno a uno Team <-> Coach
+            modelBuilder.Entity<Team>()
+                .HasOne(t => t.Coach)
+                .WithOne(c => c.Team)
+                .HasForeignKey<Coach>(c => c.TeamId);
         }
     }
 }

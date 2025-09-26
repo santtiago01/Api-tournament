@@ -39,5 +39,7 @@ namespace TournamentApi.Admin.Models
 
         public ICollection<PlayerTeam> PlayerTeams { get; set; } = new List<PlayerTeam>();
         public ICollection<MatchTeam>? MatchTeams { get; set; }
+
+        public Coach? Coach { get; set; }
     }
 }

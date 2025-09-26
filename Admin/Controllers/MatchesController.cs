@@ -26,6 +26,113 @@ namespace TournamentApi.Admin.Controllers
             return _context.matches.Any(e => e.Id == id);
         }
 
+        [HttpGet("{id}/info")]
+        public async Task<IActionResult> GetMatchInfo(long id)
+        {
+            var match = await _context.matches
+                .Include(m => m.Tournament)
+                .Include(m => m.Status)
+                .Include(m => m.Zone)
+                    .ThenInclude(z => z.Field)  // Traemos la cancha
+                .Include(m => m.MatchTeams!)
+                    .ThenInclude(mt => mt.Team)
+                        .ThenInclude(t => t.Coach)
+                .Include(m => m.MatchTeams!)
+                    .ThenInclude(mt => mt.Team)
+                        .ThenInclude(t => t.PlayerTeams)
+                            .ThenInclude(pt => pt.Player)
+                .Include(m => m.MatchTeams!)
+                    .ThenInclude(mt => mt.Team)
+                        .ThenInclude(t => t.PlayerTeams)
+                            .ThenInclude(pt => pt.Position)
+                .Include(m => m.MatchReferees!)
+                    .ThenInclude(mr => mr.Referee)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (match == null) return NotFound();
+
+            var dto = new MatchInfoDto
+            {
+                Id = match.Id,
+                MatchDate = match.MatchDate,
+                Status = match.Status == null ? null : new MatchStatusDto
+                {
+                    Id = match.Status.Id,
+                    Name = match.Status.Name
+                },
+                Tournament = match.Tournament == null ? null : new TournamentDto
+                {
+                    Id = match.Tournament.Id,
+                    Description = match.Tournament.Description,
+                    StartDate = match.Tournament.StartDate,
+                    EndDate = match.Tournament.FinishDate
+                },
+                Zone = match.Zone == null ? null : new ZoneDto
+                {
+                    Id = match.Zone.Id,
+                    Name = match.Zone.Name
+                },
+                Field = match.Zone?.Field == null ? null : new FieldDto
+                {
+                    Id = match.Zone.Field.Id,
+                    Name = match.Zone.Field.Name,
+                    Location = match.Zone.Field.Location
+                },
+                Teams = match.MatchTeams.Select(mt => new MatchTeamInfoDto
+                {
+                    Id = mt.Id,
+                    Score = mt.Goals,
+                    Team = mt.Team == null ? null : new TeamDto
+                    {
+                        Id = mt.Team.Id,
+                        Name = mt.Team.Name,
+                        Shield = mt.Team.Shield
+                    },
+                    Coach = mt.Team?.Coach == null ? null : new CoachDto
+                    {
+                        Id = mt.Team.Coach.Id,
+                        FirstName = mt.Team.Coach.FirstName,
+                        LastName = mt.Team.Coach.LastName
+                    },
+                    Players = mt.Team.PlayerTeams
+                        .Where(pt => pt.EndDate == null) // Jugadores activos
+                        .Select(pt => new PlayerTeamInfoDto
+                        {
+                            Id = pt.Id,
+                            Dorsal = pt.Dorsal,
+                            Player = new PlayerDto
+                            {
+                                Id = pt.Player.Id,
+                                FirstName = pt.Player.FirstName,
+                                LastName = pt.Player.LastName,
+                                DNI = pt.Player.DNI,
+                                PicDNI = pt.Player.PicDNI
+                            },
+                            Position = new PositionDto
+                            {
+                                Id = pt.Position.Id,
+                                Name = pt.Position.Name
+                            }
+                        }).ToList()
+                }).ToList(),
+                Referees = match.MatchReferees.Select(mr => new MatchRefereeInfoDto
+                {
+                    Id = mr.Id,
+                    Role = mr.Role,
+                    Referee = new RefereeDto
+                    {
+                        Id = mr.Referee.Id,
+                        FirstName = mr.Referee.FirstName,
+                        LastName = mr.Referee.LastName,
+                        DNI = mr.Referee.DNI,
+                        PicDNI = mr.Referee.PicDNI
+                    }
+                }).ToList()
+            };
+
+            return Ok(dto);
+        }
+
         [HttpGet("byTournament/{tournamentId}")]
         public async Task<IActionResult> GEtMatchesByTournament(long tournamentId)
         {
