@@ -17,7 +17,7 @@ namespace TournamentApi.Admin.Controllers
         }
 
         [HttpGet("{tournamentId}")]
-        public async Task<IActionResult> GetStages(int tournamentId)
+        public async Task<IActionResult> GetStages(long tournamentId)
         {
             var stages = await _context.stages
                 .Where(s => s.TournamentId == tournamentId)
@@ -35,7 +35,7 @@ namespace TournamentApi.Admin.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStage(int id, Stage stage)
+        public async Task<IActionResult> UpdateStage(long id, Stage stage)
         {
             if (id != stage.Id) return BadRequest();
             _context.Entry(stage).State = EntityState.Modified;
@@ -44,7 +44,7 @@ namespace TournamentApi.Admin.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStage(int id)
+        public async Task<IActionResult> DeleteStage(long id)
         {
             var stage = await _context.stages.FindAsync(id);
             if (stage == null) return NotFound();

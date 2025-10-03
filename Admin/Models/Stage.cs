@@ -25,6 +25,5 @@ namespace TournamentApi.Admin.Models
 
         // Relación con los partidos de esta fase
         public ICollection<BracketMatch> Matches { get; set; } = new List<BracketMatch>();
-        public ICollection<GroupStage> GroupStages { get; set; } = new List<GroupStage>();
     }
 }
