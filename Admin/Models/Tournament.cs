@@ -30,5 +30,7 @@ namespace TournamentApi.Admin.Models
 
         [Column("updatedat")]
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<GroupStage> GroupStages { get; set; } = new List<GroupStage>();
     }
 }

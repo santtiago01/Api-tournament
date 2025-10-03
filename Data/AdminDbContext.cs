@@ -24,6 +24,13 @@ namespace TournamentApi.Data
         public DbSet<Standing> standings { get; set; }
         public DbSet<Team> teams { get; set; }
         public DbSet<Tournament> tournaments { get; set; }
+        public DbSet<Stage> stages { get; set; }
+        public DbSet<BracketMatch> bracketmatches { get; set; }
+        public DbSet<BracketMatchResult> bracketmatchresults { get; set; }
+        public DbSet<GroupStage> groupstages { get; set; }
+        public DbSet<GroupStageTeam> groupstageteams { get; set; }
+        public DbSet<GroupStageMatch> groupstagematches { get; set; }
+        public DbSet<GroupStageQualifier> groupstagequalifiers { get; set; }
         public DbSet<User> users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
